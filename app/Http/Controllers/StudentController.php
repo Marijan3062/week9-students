@@ -19,4 +19,36 @@ class StudentController extends Controller
         $view->student = $student;
         return $view;
     }
+
+    public function index()
+    {
+        $students = Student::orderBy('name', 'asc')->get();
+
+        return view('/student/index', compact('students'));
+    }
+    public function create()
+    {
+
+        return view('student/show', compact('detention'));
+    }
+
+    public function store(Request $request) //, $id)
+    {
+        $detention = new Detention;
+
+        $student = Student::findOrFail(1);
+
+        $detention->fill($request->only([
+            'subject',
+            'description'
+        ]));
+
+
+
+        $detention->save();
+
+        session()->flash('success_message', 'Success!');
+
+        return redirect()->route('show', ['student_slug' => $student->name]);
+    }
 }
